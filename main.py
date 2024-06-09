@@ -33,7 +33,7 @@ def plot_pareto_distribution(word_counts):
 
     plt.figure(figsize=(10, 6))
     plt.plot(cumulative_frequencies, marker="o")
-    plt.title("Prawo Benforda - Częstości występowania słów")
+    plt.title("Rozkład pareta")
     plt.xlabel("Ranga słowa")
     plt.ylabel("Skumulowany udział")
     plt.grid(True)
@@ -89,6 +89,7 @@ def plot_word_distribution():
     sorted_word_counts = dict(
         sorted(word_counts.items(), key=lambda item: item[1], reverse=True)
     )
+    sorted_word_counts = dict(list(sorted_word_counts.items())[:20])
 
     # Dane do wykresu
     words = list(sorted_word_counts.keys())
@@ -165,6 +166,37 @@ def generate_random_words(max_sentences=100):
     text_box.insert(END, " ".join(sentences))
 
 
+def plot_digit_distribution():
+    text = text_box.get(1.0, END)  # Pobieranie tekstu z pola tekstowego
+    digit_counts = Counter(
+        filter(str.isdigit, text)
+    )  # Zliczanie wystąpień każdej cyfry
+
+    # Uzupełnienie brakujących cyfr
+    all_digits = {str(d): 0 for d in range(10)}
+    all_digits.update(digit_counts)
+
+    # Sortowanie cyfr
+    sorted_digit_counts = dict(
+        sorted(digit_counts.items(), key=lambda x: x[1], reverse=True)
+    )
+
+    # Dane do wykresu
+    digits = list(sorted_digit_counts.keys())
+    counts = list(sorted_digit_counts.values())
+
+    # Rysowanie wykresu histogramu cyfr
+    plt.figure(figsize=(10, 6))
+    norm = plt.Normalize(min(counts), max(counts))
+    plt.bar(digits, counts, color=plt.cm.viridis(norm(counts)))
+    plt.title("Histogram występowania cyfr")
+    plt.xlabel("Cyfra")
+    plt.ylabel("Liczba wystąpień")
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+    plt.xticks(rotation=0)
+    plt.show()
+
+
 # Tworzenie głównego okna aplikacji
 root = tk.Tk()
 root.title("Rozkład Benforda - Analiza Tekstu")
@@ -213,12 +245,20 @@ analyze_button = tk.Button(
 )
 analyze_button.grid(row=7, column=0, pady=10)
 
+
+# Przycisk do analizy liczby wystąpień cyfr
+analyze_digits_button = tk.Button(
+    root, text="Analizuj liczbę cyfr", command=plot_digit_distribution
+)
+analyze_digits_button.grid(row=8, column=0, pady=10)
+
 # Etykiety do wyświetlania liczby słów
 total_words_label = tk.Label(root, text="Liczba wszystkich słów: 0")
 total_words_label.grid(row=1, column=0, pady=10, padx=10, sticky="w")
 
 unique_words_label = tk.Label(root, text="Liczba różnych słów: 0")
 unique_words_label.grid(row=2, column=0, pady=10, padx=10, sticky="w")
+
 
 # Uruchomienie głównej pętli aplikacji
 root.mainloop()
