@@ -127,6 +127,7 @@ def analyze_text():
     unique_words_label.config(text=f"Liczba różnych słów: {unique_words}")
     plot_pareto_distribution(word_counts)
 
+
 def check_text():
     text = text_box.get(1.0, END)
     word_counts, total_words, unique_words = count_word_frequencies(text)
@@ -134,6 +135,7 @@ def check_text():
     unique_words_label.config(text=f"Liczba różnych słów: {unique_words}")
     letter_count = count_letters(text)
     result_label.config(text=f"Liczba liter: {letter_count}")
+
 
 def plot_word_cloud():
     text = text_box.get(1.0, END)
@@ -172,11 +174,12 @@ def generate_random_words(max_sentences=100):
     text_box.delete(1.0, END)
     text_box.insert(END, " ".join(sentences))
 
+
 def count_letters(text):
     # Usunięcie białych znaków
     text_without_whitespace = text.replace(" ", "").replace("\n", "").replace("\t", "")
     # Filtracja tylko liter
-    letters_only = ''.join(filter(str.isalpha, text_without_whitespace))
+    letters_only = "".join(filter(str.isalpha, text_without_whitespace))
     return len(letters_only)
 
 
@@ -214,26 +217,142 @@ def plot_digit_distribution():
 # Tworzenie głównego okna aplikacji
 root = tk.Tk()
 root.title("Analiza Tekstu")
+root.geometry("600x560")
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=1)
+root.columnconfigure(2, weight=1)
+root.columnconfigure(3, weight=1)
 
 # Tworzenie ramki tekstowej z paskiem przewijania
-frame = tk.Frame(root, bd=2, relief=tk.SUNKEN)
-frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+frame2 = tk.Frame(root, bd=2, relief=tk.SUNKEN)
+frame2.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
 
-scrollbar = Scrollbar(frame)
+scrollbar = Scrollbar(frame2)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-text_box = Text(frame, wrap="word", yscrollcommand=scrollbar.set, height=20, width=60)
+text_box = Text(frame2, wrap="word", yscrollcommand=scrollbar.set, height=20, width=60)
 text_box.pack(side=tk.LEFT, fill="both", expand=True)
 scrollbar.config(command=text_box.yview)
 
+frame1 = tk.Frame(root)
+frame1.grid(row=0, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
+frame1.columnconfigure(0, weight=1)
+frame1.columnconfigure(1, weight=1)
+frame1.columnconfigure(2, weight=1)
 # Przycisk do otwierania plików
-open_button = tk.Button(root, text="Otwórz plik", command=open_file)
-open_button.grid(row=1, column=0, pady=10)
+open_button = tk.Button(
+    frame1,
+    text="Otwórz plik",
+    command=open_file,
+    width=20,
+    height=2,
+)
+open_button.grid(row=0, column=0, padx=10, pady=10)
+
+random_text_button = tk.Button(
+    frame1,
+    text="Generuj losowy wyrazy",
+    command=generate_random_text,
+    width=20,
+    height=2,
+)
+random_text_button.grid(row=0, column=1, padx=10, pady=10)
+
+random_text_button = tk.Button(
+    frame1,
+    text="Generuj losowe litery",
+    command=generate_random_words,
+    width=20,
+    height=2,
+)
+random_text_button.grid(row=0, column=2, padx=10, pady=10)
 
 # Przycisk do otwierania plików
-check_text_button = tk.Button(root, text="Sprawdz tekst", command=check_text)
-check_text_button.grid(row=4, column=0, pady=10, padx=10, sticky="w")
 
+frame3 = tk.Frame(root, height=5)
+frame3.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
+frame3.columnconfigure(0, weight=1)
+frame3.columnconfigure(1, weight=1)
+frame3.columnconfigure(2, weight=1)
+
+total_words_label = tk.Label(frame3, text="Liczba wszystkich słów: 0")
+total_words_label.grid(row=2, column=0, padx=10, sticky=tk.W)
+
+unique_words_label = tk.Label(frame3, text="Liczba różnych słów: 0")
+unique_words_label.grid(row=2, column=1, padx=10, sticky=tk.E)
+
+result_label = tk.Label(frame3, text="Liczba liter: 0")
+result_label.grid(row=2, column=2, padx=10, sticky="w")
+
+check_text_button = tk.Button(
+    frame3,
+    text="Sprawdz tekst",
+    command=check_text,
+    width=20,
+    height=2,
+)
+check_text_button.grid(row=2, column=3, padx=10, sticky="w")
+
+frame4 = tk.Frame(root)
+frame4.grid(row=3, column=0, columnspan=4, padx=10, sticky="nsew")
+frame4.columnconfigure(0, weight=1)
+frame4.columnconfigure(1, weight=1)
+frame4.columnconfigure(2, weight=1)
+frame4.columnconfigure(3, weight=1)
+frame4.columnconfigure(4, weight=1)
+
+analyze_button = tk.Button(
+    frame4,
+    text="Analizuj tekst",
+    command=analyze_text,
+    width=20,
+    height=2,
+)
+analyze_button.grid(row=3, column=0, padx=5)
+
+analyze_button = tk.Button(
+    frame4,
+    text="Analizuj liczbę słów",
+    command=plot_word_distribution,
+    width=20,
+    height=2,
+)
+analyze_button.grid(row=3, column=1, padx=4)
+
+analyze_button = tk.Button(
+    frame4,
+    text="Analizuj liczbę liter",
+    command=plot_letter_distribution,
+    width=20,
+    height=2,
+)
+analyze_button.grid(row=3, column=2, padx=4)
+
+analyze_digits_button = tk.Button(
+    frame4,
+    text="Analizuj liczbę cyfr",
+    command=plot_digit_distribution,
+    width=20,
+    height=2,
+)
+analyze_digits_button.grid(row=3, column=3, padx=4)
+
+analyze_button = tk.Button(
+    frame4,
+    text="Chmura punktów",
+    command=plot_word_cloud,
+    width=20,
+    height=2,
+)
+analyze_button.grid(row=3, column=4, pady=10, padx=4)
+
+# root.columnconfigure(0, weight=1)  # kolumna 0
+# root.columnconfigure(1, weight=1)
+# root.grid_columnconfigure(1, minsize=200)  # kolumna 1
+# root.grid_columnconfigure(2, minsize=200)  # kolumna 2
+# root.grid_columnconfigure(3, minsize=200)  # kolumna 3
+
+"""
 # Przycisk do generowania losowego tekstu
 random_text_button = tk.Button(
     root, text="Generuj losowy wyrazy", command=generate_random_text
@@ -271,13 +390,7 @@ analyze_digits_button = tk.Button(
 analyze_digits_button.grid(row=4, column=1, pady=10, padx=10)
 
 # Etykiety do wyświetlania liczby słów
-total_words_label = tk.Label(root, text="Liczba wszystkich słów: 0")
-total_words_label.grid(row=1, column=0, pady=10, padx=10, sticky="w")
 
-unique_words_label = tk.Label(root, text="Liczba różnych słów: 0")
-unique_words_label.grid(row=2, column=0, pady=10, padx=10, sticky="w")
-
-result_label = tk.Label(root, text="Liczba liter: 0")
-result_label.grid(row=3, column=0, pady=10, padx=10, sticky="w")
+"""
 # Uruchomienie głównej pętli aplikacji
 root.mainloop()
